@@ -1,0 +1,21 @@
+{
+  "basic": "Basic",
+  "default": "Default",
+  "nestedKey": "Nested",
+  "obj_param": "Object Param",
+  "arr_param": "Array Param",
+  "arr_key": "Array Key",
+  "component_translator": "Component Translator",
+  "hello_world": "Hello World",
+  "default_message": "Default Message",
+  "nested": {
+    "a": "Nested A",
+    "b": "Nested B"
+  },
+  "objParam": "{ a } plus { b } equals {sum }",
+  "arrParam": "I have three brothers, their names are {0}, {1} and {2}",
+  "zhang_san": "Peter",
+  "zhao_si": "Tom",
+  "wang_wu": "John",
+  "arr_keys": ["Key1", "Key2"]
+}

@@ -1,0 +1,19 @@
+{
+  "basic": "基础",
+  "default": "缺省",
+  "nestedKey": "嵌套",
+  "obj_param": "对象参数",
+  "arr_param": "数组参数",
+  "arr_key": "数组键",
+  "component_translator": "组件翻译",
+  "hello_world": "你好世界",
+  "nested": {
+    "a": "嵌套 A",
+    "b": "嵌套 B"
+  },
+  "objParam": "{ a } 与 { b } 的和是 { sum }",
+  "arrParam": "我有三个兄弟，他们叫{0}，{1}和{2}",
+  "zhang_san": "张三",
+  "zhao_si": "赵四",
+  "wang_wu": "王五"
+}

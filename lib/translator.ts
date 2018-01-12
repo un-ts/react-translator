@@ -1,0 +1,204 @@
+export interface Translator<Locale = string> {
+  (key: string, params?: any, ignoreNonExist?: boolean): string
+  defaultLocale?: Locale
+  locale?: Locale
+  $watch?: Watch<Locale>
+}
+
+export interface Translations {
+  [locale: string]: any
+}
+
+export const LOCALE = 'locale'
+export const DEFAULT_LOCALE = 'defaultLocale'
+
+export type Watcher<T> = (newVal: T, val: T) => void
+export type Watch<T> = (key: string, watcher: Watcher<T>) => UnWatch
+export type UnWatch = () => void
+
+export function defineReactive<V, T extends { $watch?: Watch<V> }>(
+  obj: T,
+  key: string,
+  val: any,
+) {
+  const property = Object.getOwnPropertyDescriptor(obj, key)
+
+  if (property && property.configurable === false) {
+    return
+  }
+
+  const watchers: {
+    [key: string]: Array<Watcher<V>>
+  } =
+    (obj as any)._watchers || ((obj as any)._watchers = {})
+
+  if (!watchers[key]) {
+    watchers[key] = []
+  }
+
+  if (!obj.$watch) {
+    obj.$watch = (k, watcher) => {
+      const ws = watchers[k]
+      if (!ws) {
+        return
+      }
+      const index = ws.length
+      ws.push(watcher)
+      return () => {
+        ws.splice(index)
+      }
+    }
+  }
+
+  const getter = property && property.get
+  const setter = property && property.set
+
+  Object.defineProperty(obj, key, {
+    enumerable: true,
+    configurable: true,
+    get() {
+      const value = getter ? getter.call(obj) : val
+      return value
+    },
+    set(newVal) {
+      const value = getter ? getter.call(obj) : val
+
+      if (newVal === value || (newVal !== newVal && value !== value)) {
+        return
+      }
+
+      if (setter) {
+        setter.call(obj, newVal)
+      } else {
+        val = newVal
+      }
+
+      watchers[key].forEach(watcher => {
+        watcher(newVal, value)
+      })
+    },
+  })
+}
+
+const warn = console.warn || (() => {})
+
+const getValue = (input: any, key: string): string => {
+  key = key.replace(/\[(\d+)\]/g, '.$1')
+  let value = input
+
+  key.split('.').some(k => {
+    if (!value || typeof value !== 'object') {
+      return true
+    }
+
+    value = value[k]
+  })
+
+  if (typeof value === 'object') {
+    if (process.env.NODE_ENV === 'development' && value !== null) {
+      warn('you are trying to get non-literal value')
+    }
+    return value && value.toString()
+  }
+
+  return value
+}
+
+export type Merge = (prev: Translations, next: Translations) => Translations
+
+export interface TranslatorOptions {
+  locale: string
+  translations?: Translations
+  defaultLocale?: string
+  merge?: Merge
+}
+
+let translations: Translations
+
+export let merge: Merge
+
+export const mergeTranslations = (t: Translations) => {
+  if (!merge) {
+    if (process.env.NODE_ENV === 'development') {
+      warn(
+        'ReactTranslator will not help you to merge translations, please pass your own merge strategy, `lodash.merge` for example',
+      )
+    }
+    return
+  }
+
+  merge(translations, t)
+}
+
+export const createTranslator = (
+  translatorOptions: string | TranslatorOptions,
+): Translator => {
+  if (typeof translatorOptions === 'string') {
+    translatorOptions = { locale: translatorOptions }
+  }
+
+  const {
+    locale: instanceLocale,
+    translations: instanceTranslations,
+    defaultLocale: instanceDefaultLocale,
+    merge: instanceMerge,
+  } = translatorOptions
+
+  if (instanceTranslations) {
+    if (!translations) {
+      translations = instanceTranslations
+    } else if (process.env.NODE_ENV === 'development') {
+      warn('translations should only be injected once!')
+    }
+  } else if (process.env.NODE_ENV === 'development' && !translations) {
+    warn('translations has not be injected, translator will not work!')
+  }
+
+  if (instanceMerge) {
+    if (!merge) {
+      merge = instanceMerge
+    } else if (process.env.NODE_ENV === 'development') {
+      warn('merge should only be injected once!')
+    }
+  }
+
+  const instance: Translator = (
+    key: string,
+    params?: any,
+    ignoreNonExist?: boolean,
+  ) => {
+    const { locale } = instance
+    const translation = translations[locale]
+
+    let value = getValue(translation, key)
+
+    if (value === undefined) {
+      const { defaultLocale } = instance
+
+      if (defaultLocale && defaultLocale !== locale) {
+        const defaultTranslation = translations[defaultLocale]
+        value = getValue(defaultTranslation, key)
+      }
+
+      if (
+        process.env.NODE_ENV === 'development' &&
+        value === undefined &&
+        !ignoreNonExist
+      ) {
+        warn(
+          `your are trying to get nonexistent key \`${key}\` without default locale fallback`,
+        )
+      }
+    }
+
+    value =
+      value &&
+      value.replace(/{([^{}]+)}/g, (matched, $0) => getValue(params, $0.trim()))
+    return value == null ? key : value
+  }
+
+  defineReactive(instance, LOCALE, instanceLocale)
+  defineReactive(instance, DEFAULT_LOCALE, instanceDefaultLocale)
+
+  return instance
+}
