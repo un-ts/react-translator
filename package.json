@@ -16,9 +16,9 @@
     "dev": "webpack-dev-server --color --hot --progress",
     "docs": "rimraf docs && cross-env NODE_ENV=production webpack --color --progress -p",
     "lint": "tslint -p . -e 'node_modules/**' -e 'dist/**' -t stylish '**/*.{ts,tsx}'",
-    "test": "rimraf test/__snapshots__ && cross-env NODE_ENV=development jest",
-    "precommit": "lint-staged",
-    "prepush": "npm run test && npm run docs",
+    "test": "rimraf test/__snapshots__ && cross-env NODE_ENV=development jest -u",
+    "precommit": "lint-staged && npm run docs && git add -A",
+    "prepush": "npm run test",
     "prepublishOnly": "npm run build"
   },
   "files": ["dist/**/*.js", "dist/**/*.d.ts"],
