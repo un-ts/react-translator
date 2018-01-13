@@ -19,7 +19,7 @@ export type UnWatch = () => void
 export function defineReactive<V, T extends { $watch?: Watch<V> }>(
   obj: T,
   key: string,
-  val: any,
+  val?: any,
 ) {
   const property = Object.getOwnPropertyDescriptor(obj, key)
 
@@ -29,25 +29,38 @@ export function defineReactive<V, T extends { $watch?: Watch<V> }>(
 
   const watchers: {
     [key: string]: Array<Watcher<V>>
-  } =
-    (obj as any)._watchers || ((obj as any)._watchers = {})
+  } = (ws => {
+    if (ws) {
+      return ws
+    }
+
+    ws = {}
+
+    Object.defineProperty(obj, '_watchers', {
+      value: ws,
+    })
+
+    return ws
+  })((obj as any)._watchers)
 
   if (!watchers[key]) {
     watchers[key] = []
   }
 
   if (!obj.$watch) {
-    obj.$watch = (k, watcher) => {
-      const ws = watchers[k]
-      if (!ws) {
-        return
-      }
-      const index = ws.length
-      ws.push(watcher)
-      return () => {
-        ws.splice(index)
-      }
-    }
+    Object.defineProperty(obj, '$watch', {
+      value(k: string, watcher: Watcher<V>) {
+        const ws = watchers[k]
+        if (!ws) {
+          return
+        }
+        const index = ws.length
+        ws.push(watcher)
+        return () => {
+          ws.splice(index, 1)
+        }
+      },
+    })
   }
 
   const getter = property && property.get
@@ -63,6 +76,7 @@ export function defineReactive<V, T extends { $watch?: Watch<V> }>(
     set(newVal) {
       const value = getter ? getter.call(obj) : val
 
+      /* istanbul ignore next */
       if (newVal === value || (newVal !== newVal && value !== value)) {
         return
       }
@@ -80,7 +94,9 @@ export function defineReactive<V, T extends { $watch?: Watch<V> }>(
   })
 }
 
-const warn = console.warn || (() => {})
+/* istanbul ignore next */
+const warn =
+  (process.env.NODE_ENV === 'development' && console.warn) || (() => {})
 
 const getValue = (input: any, key: string): string => {
   key = key.replace(/\[(\d+)\]/g, '.$1')
@@ -150,8 +166,8 @@ export const createTranslator = (
     } else if (process.env.NODE_ENV === 'development') {
       warn('translations should only be injected once!')
     }
-  } else if (process.env.NODE_ENV === 'development' && !translations) {
-    warn('translations has not be injected, translator will not work!')
+  } else if (!translations) {
+    translations = {}
   }
 
   if (instanceMerge) {

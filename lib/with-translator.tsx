@@ -83,19 +83,20 @@ export function withTranslator<P = {}>(translations?: Translations) {
         }
       }
 
-      componentWillUnMount() {
+      componentWillUnmount() {
         this.unwatchLocale()
       }
 
       render() {
         const { translator } = this.context
 
-        const extraProps = {
-          t: translator,
-          locale: translator.locale,
-        }
-
-        return <Component {...this.props} {...extraProps} />
+        return (
+          <Component
+            {...this.props}
+            t={translator}
+            locale={translator.locale}
+          />
+        )
       }
     }
 
