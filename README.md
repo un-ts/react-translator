@@ -8,7 +8,7 @@
 [![David Dev](https://img.shields.io/david/dev/JounQin/react-translator.svg)](https://david-dm.org/JounQin/react-translator?type=dev)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 
-A deadly simple i18n translate plugin for Vue, ready for Server Side Rendering.
+A deadly simple i18n translate plugin for React, ready for Server Side Rendering.
 
 ## Demo
 
