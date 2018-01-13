@@ -163,7 +163,10 @@ export const createTranslator = (
   if (instanceTranslations) {
     if (!translations) {
       translations = instanceTranslations
-    } else if (process.env.NODE_ENV === 'development') {
+    } else if (
+      process.env.NODE_ENV === 'development' &&
+      translations !== instanceTranslations
+    ) {
       warn('translations should only be injected once!')
     }
   } else if (!translations) {
@@ -173,7 +176,10 @@ export const createTranslator = (
   if (instanceMerge) {
     if (!merge) {
       merge = instanceMerge
-    } else if (process.env.NODE_ENV === 'development') {
+    } else if (
+      process.env.NODE_ENV === 'development' &&
+      merge !== instanceMerge
+    ) {
       warn('merge should only be injected once!')
     }
   }

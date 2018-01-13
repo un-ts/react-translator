@@ -1,4 +1,4 @@
-import { merge } from 'lodash'
+import { merge, mergeWith } from 'lodash'
 
 const mockFn = (console.warn = jest.fn())
 
@@ -22,7 +22,7 @@ describe('translator', () => {
     createTranslator({
       locale: 'en',
       translations: {},
-      merge,
+      merge: mergeWith,
     })
 
     expect(mockFn).toBeCalled()
