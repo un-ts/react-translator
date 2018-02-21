@@ -54,9 +54,15 @@ export function defineReactive<V, T extends { $watch?: Watch<V> }>(
         if (!ws) {
           return
         }
-        const index = ws.length
         ws.push(watcher)
         return () => {
+          const index = ws.indexOf(watcher)
+          if (index < 0) {
+            if (process.env.NODE_ENV === 'development') {
+              warn('the watcher has been removed before')
+            }
+            return
+          }
           ws.splice(index, 1)
         }
       },

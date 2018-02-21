@@ -74,17 +74,16 @@ export function withTranslator<P = {}>(translations?: Translations) {
       }
 
       componentWillMount() {
-        if (
-          translations &&
-          mergedCache.indexOf(TranslatorComponent.cid) === -1
-        ) {
+        const { cid: id } = TranslatorComponent
+        if (translations && mergedCache.indexOf(id) === -1) {
           mergeTranslations(translations)
-          mergedCache.push(TranslatorComponent.cid)
+          mergedCache.push(id)
         }
       }
 
       componentWillUnmount() {
         this.unwatchLocale()
+        this.unwatchDefaultLocale()
       }
 
       render() {

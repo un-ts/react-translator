@@ -24,6 +24,8 @@ describe('defineReactive', () => {
     const mockFn2 = jest.fn()
     const unwatch = target.$watch('key', mockFn2)
     unwatch()
+    unwatch()
+    expect(mockFn1).toBeCalled()
     target.key = null
     expect(mockFn2).not.toBeCalled()
   })
