@@ -1,6 +1,6 @@
 {
-  "name": "react-translator",
-  "version": "0.0.1",
+  "name": "react-translator2",
+  "version": "0.1.0",
   "description": "A deadly simple i18n translate plugin for React, ready for Server Side Rendering.",
   "main": "dist/cjs/react-translator.js",
   "module": "dist/es/index.js",

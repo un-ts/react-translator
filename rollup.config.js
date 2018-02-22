@@ -24,7 +24,7 @@ if (isProd) {
   plugins.push(
     uglify({
       output: {
-        comments: true,
+        comments: /^!/,
       },
     }),
   )

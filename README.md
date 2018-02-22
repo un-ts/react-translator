@@ -3,7 +3,7 @@
 [![Greenkeeper badge](https://badges.greenkeeper.io/JounQin/react-translator.svg)](https://greenkeeper.io/)
 [![Codecov](https://img.shields.io/codecov/c/github/JounQin/react-translator.svg)](https://codecov.io/gh/JounQin/react-translator)
 [![Travis](https://img.shields.io/travis/JounQin/react-translator.svg)](https://travis-ci.org/JounQin/react-translator)
-[![npm](https://img.shields.io/npm/dt/react-translator.svg)](https://www.npmjs.com/package/react-translator)
+[![npm](https://img.shields.io/npm/dt/react-translator2.svg)](https://www.npmjs.com/package/react-translator2)
 [![David](https://img.shields.io/david/JounQin/react-translator.svg)](https://david-dm.org/JounQin/react-translator)
 [![David Dev](https://img.shields.io/david/dev/JounQin/react-translator.svg)](https://david-dm.org/JounQin/react-translator?type=dev)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
@@ -21,11 +21,11 @@ https://JounQin.github.io/react-translator
 ### Usage
 
 ```bash
-yarn add react-translator
+yarn add react-translator2
 ```
 
 ```ts
-import { TranslatorProvider, createTranslator, withTranslator } from 'react-translator'
+import { TranslatorProvider, createTranslator, withTranslator } from 'react-translator2'
 
 const translator = createTranslator({
   locale?: string, // set it on initialize or before first rendering
@@ -84,7 +84,7 @@ const translations: {
 Then you need to use `withTranslator` to wrap your component to enable translator prop `t` and prop `locale` + `defaultLocale`, the reference value of `t` will never change what means there will be only one translator instance. And prop `locale` is string will be changed when you set value of `t.locale`.
 
 ```ts
-import { withTranslator } from 'react-translator'
+import { withTranslator } from 'react-translator2'
 
 export default withTranslator({
   zh: {
@@ -130,7 +130,7 @@ You'd better to detect user custom locale via cookie and fallback to [accept-lan
 And you need to generate a single translator instance for every user request (cache by locale would be better) via `createTranslator`, `koa` for example:
 
 ```ts
-import { TranslatorProvider, createTranslator } from 'react-translator'
+import { TranslatorProvider, createTranslator } from 'react-translator2'
 
 app.use(async (ctx, next) => {
   const translator = createTranslator({
