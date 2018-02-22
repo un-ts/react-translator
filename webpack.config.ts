@@ -74,10 +74,14 @@ const config: webpack.Configuration = {
     new ForkTsCheckerWebpackPlugin({
       tslint: true,
     }),
-    ...(__DEV__
-      ? [new webpack.NamedChunksPlugin(), new webpack.NamedModulesPlugin()]
-      : []),
   ],
+}
+
+if (__DEV__) {
+  config.plugins.push(
+    new webpack.NamedChunksPlugin(),
+    new webpack.NamedModulesPlugin(),
+  )
 }
 
 export default config

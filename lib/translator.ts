@@ -59,7 +59,8 @@ export function defineReactive<V, T extends { $watch?: Watch<V> }>(
           const index = ws.indexOf(watcher)
           if (index < 0) {
             if (process.env.NODE_ENV === 'development') {
-              warn('the watcher has been removed before')
+              // tslint:disable-next-line no-console
+              console.warn('the watcher has been removed before')
             }
             return
           }
@@ -100,10 +101,6 @@ export function defineReactive<V, T extends { $watch?: Watch<V> }>(
   })
 }
 
-/* istanbul ignore next */
-const warn =
-  (process.env.NODE_ENV === 'development' && console.warn) || (() => {})
-
 const getValue = (input: any, key: string): string => {
   key = key.replace(/\[(\d+)\]/g, '.$1')
   let value = input
@@ -118,7 +115,8 @@ const getValue = (input: any, key: string): string => {
 
   if (typeof value === 'object') {
     if (process.env.NODE_ENV === 'development' && value !== null) {
-      warn('you are trying to get non-literal value')
+      // tslint:disable-next-line no-console
+      console.warn('you are trying to get non-literal value')
     }
     return value && value.toString()
   }
@@ -142,7 +140,8 @@ export let merge: Merge
 export const mergeTranslations = (t: Translations) => {
   if (!merge) {
     if (process.env.NODE_ENV === 'development') {
-      warn(
+      // tslint:disable-next-line no-console
+      console.warn(
         'ReactTranslator will not help you to merge translations, please pass your own merge strategy, `lodash.merge` for example',
       )
     }
@@ -173,7 +172,8 @@ export const createTranslator = (
       process.env.NODE_ENV === 'development' &&
       translations !== instanceTranslations
     ) {
-      warn('translations should only be injected once!')
+      // tslint:disable-next-line no-console
+      console.warn('translations should only be injected once!')
     }
   } else if (!translations) {
     translations = {}
@@ -186,7 +186,8 @@ export const createTranslator = (
       process.env.NODE_ENV === 'development' &&
       merge !== instanceMerge
     ) {
-      warn('merge should only be injected once!')
+      // tslint:disable-next-line no-console
+      console.warn('merge should only be injected once!')
     }
   }
 
@@ -213,7 +214,8 @@ export const createTranslator = (
         value === undefined &&
         !ignoreNonExist
       ) {
-        warn(
+        // tslint:disable-next-line no-console
+        console.warn(
           `your are trying to get nonexistent key \`${key}\` without default locale fallback`,
         )
       }

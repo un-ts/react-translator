@@ -1,3 +1,4 @@
+import buble from 'rollup-plugin-buble'
 import replace from 'rollup-plugin-replace'
 import uglify from 'rollup-plugin-uglify'
 
@@ -8,7 +9,7 @@ const format = process.env.FORMAT || 'umd'
 
 const isProd = NODE_ENV === 'production'
 
-const plugins = []
+const plugins = [buble()]
 
 if (format === 'umd') {
   plugins.push(
@@ -34,7 +35,7 @@ export default {
     id: 'react-translator',
   },
   external: ['react', 'react-dom', 'prop-types'],
-  input: 'dist/esm/index.js',
+  input: 'dist/es/index.js',
   output: {
     banner: `/*!
 * ${pkg.name} ${pkg.description}

@@ -1,5 +1,7 @@
 import { defineReactive } from '../lib'
 
+const mockWarn = (console.warn = jest.fn())
+
 describe('defineReactive', () => {
   it('should add $watch on target', () => {
     const target: any = {}
@@ -25,7 +27,7 @@ describe('defineReactive', () => {
     const unwatch = target.$watch('key', mockFn2)
     unwatch()
     unwatch()
-    expect(mockFn1).toBeCalled()
+    expect(mockWarn).toBeCalled()
     target.key = null
     expect(mockFn2).not.toBeCalled()
   })
