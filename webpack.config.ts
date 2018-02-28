@@ -10,7 +10,8 @@ const __DEV__ = NODE_ENV === 'development'
 
 const resolve = (...args: string[]) => path.resolve(process.cwd(), ...args)
 
-const config: webpack.Configuration = {
+const config: any = {
+  mode: NODE_ENV,
   entry: './src/index.tsx',
   output: {
     path: resolve('docs'),
@@ -29,7 +30,7 @@ const config: webpack.Configuration = {
     rules: [
       {
         test: /\.pug$/,
-        use: ['apply-loader', 'pug-loader'],
+        use: ['html-loader', 'pug-html-loader'],
       },
       {
         test: /\.tsx?$/,
@@ -54,19 +55,23 @@ const config: webpack.Configuration = {
       },
     ],
   },
+  optimization: {
+    splitChunks: {
+      name: 'vendors',
+      chunks: 'all',
+      cacheGroups: {
+        test: ({ context, request }: { context: string; request: string }) =>
+          /node_modules/.test(context) && !/\.css$/.test(request),
+      },
+    },
+    runtimeChunk: {
+      name: 'manifest',
+    },
+  },
   plugins: [
     new webpack.DefinePlugin({
       __DEV__,
       I18N_REGEX: /([\w-]*[\w]+)\.i18n\.json$/.toString(),
-      'process.env.NODE_ENV': JSON.stringify(NODE_ENV),
-    }),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendors',
-      minChunks: ({ context, request }) =>
-        /node_modules/.test(context) && !/\.css$/.test(request),
-    }),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'manifest',
     }),
     new HtmlWebpackPlugin({
       template: 'src/index.pug',
@@ -75,13 +80,6 @@ const config: webpack.Configuration = {
       tslint: true,
     }),
   ],
-}
-
-if (__DEV__) {
-  config.plugins.push(
-    new webpack.NamedChunksPlugin(),
-    new webpack.NamedModulesPlugin(),
-  )
 }
 
 export default config
