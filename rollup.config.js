@@ -31,12 +31,12 @@ if (isProd) {
 }
 
 export default {
-  amd: {
-    id: 'react-translator',
-  },
   external: ['react', 'react-dom', 'prop-types'],
   input: 'dist/es/index.js',
   output: {
+    amd: {
+      id: 'react-translator',
+    },
     banner: `/*!
 * ${pkg.name} ${pkg.description}
 * Version ${pkg.version}

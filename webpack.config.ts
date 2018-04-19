@@ -1,8 +1,8 @@
-import * as path from 'path'
+import path from 'path'
 
-import * as ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin'
-import * as HtmlWebpackPlugin from 'html-webpack-plugin'
-import * as webpack from 'webpack'
+import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin'
+import HtmlWebpackPlugin from 'html-webpack-plugin'
+import webpack from 'webpack'
 
 const NODE_ENV = process.env.NODE_ENV || 'development'
 

@@ -1,7 +1,7 @@
 import { configure, shallow } from 'enzyme'
-import * as Adapter from 'enzyme-adapter-react-16'
+import Adapter from 'enzyme-adapter-react-16'
 import { merge } from 'lodash'
-import * as React from 'react'
+import React from 'react'
 
 import { createTranslator, withTranslator } from '../lib'
 

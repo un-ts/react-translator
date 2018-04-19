@@ -1,5 +1,5 @@
-import * as PropTypes from 'prop-types'
-import * as React from 'react'
+import PropTypes from 'prop-types'
+import React from 'react'
 
 // tslint:disable-next-line:no-var-requires
 const hoistNonReactStatics = require('hoist-non-react-statics')

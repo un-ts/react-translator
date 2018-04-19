@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 
 import { LOCALE, Translator, withTranslator } from '../lib'
 
@@ -69,7 +69,10 @@ export default withTranslator({
     }
 
     render() {
-      const { props: { t }, state: { a, b } } = this
+      const {
+        props: { t },
+        state: { a, b },
+      } = this
 
       return (
         <table className="table table-bordered">

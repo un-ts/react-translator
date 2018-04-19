@@ -1,5 +1,5 @@
 import { merge } from 'lodash'
-import * as React from 'react'
+import React from 'react'
 import { render } from 'react-dom'
 
 import { TranslatorProvider, createTranslator } from '../lib'
