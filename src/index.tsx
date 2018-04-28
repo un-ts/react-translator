@@ -31,20 +31,8 @@ const translator = createTranslator({
 class TranslatorContainer extends React.PureComponent {
   state: TranslatorContextState = {
     translator,
-    locale: translator.locale,
-    defaultLocale: translator.defaultLocale,
     toggleLocale: locale => {
-      this.state.translator.locale = locale
-      this.setState({
-        locale,
-      })
       setItem(LOCALE, locale)
-    },
-    toggleDefaultLocale: defaultLocale => {
-      this.state.translator.defaultLocale = defaultLocale
-      this.setState({
-        defaultLocale,
-      })
     },
   }
 

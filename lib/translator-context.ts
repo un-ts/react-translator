@@ -2,16 +2,19 @@ import React from 'react'
 
 import { Translator } from './translator'
 
-export interface TranslatorContextState {
-  translator: Translator
-  locale: string
-  defaultLocale?: string
-  toggleDefaultLocale?: (defaultLocale: string) => void
+interface ToggleLocale {
   toggleLocale?: (locale: string) => void
+  toggleDefaultLocale?: (defaultLocale: string) => void
 }
 
-export interface TranslatorContextProps extends TranslatorContextState {
+export interface TranslatorContextState extends ToggleLocale {
+  translator: Translator
+}
+
+export interface TranslatorContextProps extends ToggleLocale {
   t: Translator
+  locale: string
+  defaultLocale: string
 }
 
 export const TranslatorContext = React.createContext<TranslatorContextState>(
