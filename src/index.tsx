@@ -2,12 +2,7 @@ import { merge } from 'lodash'
 import React from 'react'
 import { render } from 'react-dom'
 
-import {
-  LOCALE,
-  TranslatorContext,
-  TranslatorContextState,
-  createTranslator,
-} from '../lib'
+import { LOCALE, TranslatorContext, createTranslator } from '../lib'
 
 import { getItem, setItem } from 'utils'
 

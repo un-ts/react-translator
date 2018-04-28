@@ -76,9 +76,9 @@ export function withTranslator<P extends TranslatorProps>(
     function TranslatorWrapperComponent<Props = {}>(props: Props) {
       return (
         <TranslatorContext.Consumer>
-          {translatorContext => {
-            return <TranslatorComponent {...props} {...translatorContext} />
-          }}
+          {translatorContext => (
+            <TranslatorComponent {...props} {...translatorContext} />
+          )}
         </TranslatorContext.Consumer>
       )
     }
