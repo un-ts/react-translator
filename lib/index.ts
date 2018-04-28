@@ -1,3 +1,3 @@
 export * from './translator'
-export * from './translator-provider'
+export * from './translator-context'
 export * from './with-translator'

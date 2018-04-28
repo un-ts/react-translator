@@ -1,79 +1,22 @@
-import PropTypes from 'prop-types'
+import hoistNonReactStatics from 'hoist-non-react-statics'
 import React from 'react'
 
-// tslint:disable-next-line:no-var-requires
-const hoistNonReactStatics = require('hoist-non-react-statics')
-
-import {
-  DEFAULT_LOCALE,
-  LOCALE,
-  Translations,
-  Translator,
-  UnWatch,
-  mergeTranslations,
-} from './translator'
-
-export interface TranslatorProps {
-  t: Translator
-  locale: string
-}
+import { Translations, mergeTranslations } from './translator'
+import { TranslatorContext, TranslatorContextProps } from './translator-context'
 
 let cid = 0
 
 const mergedCache: number[] = []
 
-export function withTranslator<P = {}>(translations?: Translations) {
-  type Props = TranslatorProps & P
-
-  interface State {
-    locale: string
-    defaultLocale: string
-  }
-
-  return (
-    Component: React.StatelessComponent<Props> | React.ComponentClass<Props>,
-  ) => {
-    class TranslatorComponent extends React.PureComponent<Props, State> {
+export function withTranslator<P extends TranslatorContextProps>(
+  translations?: Translations,
+) {
+  return (Component: React.StatelessComponent<P> | React.ComponentClass<P>) => {
+    class TranslatorComponent extends React.PureComponent {
       static cid = cid++
 
-      static contextTypes = {
-        translator: PropTypes.func.isRequired,
-      }
-
-      context: {
-        translator: Translator
-      }
-
-      unwatchLocale: UnWatch
-      unwatchDefaultLocale: UnWatch
-
-      constructor(props: Props, context?: any) {
-        super(props, context)
-
-        const { translator } = this.context
-
-        this.state = {
-          locale: translator.locale,
-          defaultLocale: translator.defaultLocale,
-        }
-
-        this.unwatchLocale = translator.$watch(LOCALE, locale => {
-          this.setState({
-            locale,
-          })
-        })
-
-        this.unwatchDefaultLocale = translator.$watch(
-          DEFAULT_LOCALE,
-          defaultLocale => {
-            this.setState({
-              defaultLocale,
-            })
-          },
-        )
-      }
-
-      componentWillMount() {
+      constructor(props: P) {
+        super(props)
         const { cid: id } = TranslatorComponent
         if (translations && mergedCache.indexOf(id) === -1) {
           mergeTranslations(translations)
@@ -81,20 +24,17 @@ export function withTranslator<P = {}>(translations?: Translations) {
         }
       }
 
-      componentWillUnmount() {
-        this.unwatchLocale()
-        this.unwatchDefaultLocale()
-      }
-
       render() {
-        const { translator } = this.context
-
         return (
-          <Component
-            {...this.props}
-            t={translator}
-            locale={translator.locale}
-          />
+          <TranslatorContext.Consumer>
+            {translatorContext => (
+              <Component
+                {...this.props}
+                {...translatorContext}
+                t={translatorContext.translator}
+              />
+            )}
+          </TranslatorContext.Consumer>
         )
       }
     }

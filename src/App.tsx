@@ -1,13 +1,6 @@
 import React from 'react'
 
-import { LOCALE, Translator, withTranslator } from '../lib'
-
-import { setItem } from 'utils'
-
-interface Props {
-  locale: string
-  t: Translator
-}
+import { TranslatorContextProps, withTranslator } from '../lib'
 
 const CustomEl = withTranslator({
   zh: {
@@ -23,7 +16,7 @@ export default withTranslator({
     defaultMsg: 'Default Message',
   },
 })(
-  class App extends React.PureComponent<Props> {
+  class App extends React.PureComponent<TranslatorContextProps> {
     state = {
       a: 1,
       b: 1,
@@ -31,7 +24,7 @@ export default withTranslator({
 
     changed = 0
 
-    constructor(props: Props, context?: any) {
+    constructor(props: TranslatorContextProps, context?: any) {
       super(props, context)
       this.addA = this.addA.bind(this)
       this.addB = this.addB.bind(this)
@@ -39,7 +32,7 @@ export default withTranslator({
     }
 
     handleSelect(e: React.ChangeEvent<HTMLSelectElement>) {
-      this.props.t.locale = e.target.value
+      this.props.toggleLocale(e.target.value)
     }
 
     addA() {
@@ -51,20 +44,6 @@ export default withTranslator({
     addB() {
       this.setState({
         b: this.state.b + 1,
-      })
-    }
-
-    componentDidMount() {
-      this.props.t.$watch(LOCALE, (curr, prev) => {
-        // tslint:disable-next-line:no-console
-        console.log('prev:', prev)
-        // tslint:disable-next-line:no-console
-        console.log('curr:', curr)
-        setItem('locale', curr)
-
-        if (++this.changed % 3 === 0) {
-          alert('you have changed locale ' + this.changed + ' times!')
-        }
       })
     }
 

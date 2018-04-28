@@ -2,9 +2,14 @@ import { merge } from 'lodash'
 import React from 'react'
 import { render } from 'react-dom'
 
-import { TranslatorProvider, createTranslator } from '../lib'
+import {
+  LOCALE,
+  TranslatorContext,
+  TranslatorContextState,
+  createTranslator,
+} from '../lib'
 
-import { getItem } from 'utils'
+import { getItem, setItem } from 'utils'
 
 import App from './App'
 
@@ -18,17 +23,44 @@ const AppContainer =
 
 const translator = createTranslator({
   defaultLocale: 'en',
-  locale: getItem('locale') || 'zh',
+  locale: getItem(LOCALE) || 'zh',
   translations,
   merge,
 })
 
+class TranslatorContainer extends React.PureComponent {
+  state: TranslatorContextState = {
+    translator,
+    locale: translator.locale,
+    defaultLocale: translator.defaultLocale,
+    toggleLocale: locale => {
+      this.state.translator.locale = locale
+      this.setState({
+        locale,
+      })
+      setItem(LOCALE, locale)
+    },
+    toggleDefaultLocale: defaultLocale => {
+      this.state.translator.defaultLocale = defaultLocale
+      this.setState({
+        defaultLocale,
+      })
+    },
+  }
+
+  render() {
+    return (
+      <TranslatorContext.Provider value={this.state}>
+        <App />
+      </TranslatorContext.Provider>
+    )
+  }
+}
+
 const renderApp = () =>
   render(
     <AppContainer>
-      <TranslatorProvider translator={translator}>
-        <App />
-      </TranslatorProvider>
+      <TranslatorContainer />
     </AppContainer>,
     document.getElementById('app'),
   )

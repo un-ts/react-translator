@@ -1,7 +1,7 @@
 import React from 'react'
 import { create } from 'react-test-renderer'
 
-import { TranslatorProvider, createTranslator, withTranslator } from '../lib'
+import { TranslatorContext, createTranslator, withTranslator } from '../lib'
 
 describe('provider', () => {
   const translator = createTranslator({
@@ -17,9 +17,14 @@ describe('provider', () => {
 
   it('should render correctly', () => {
     const app = create(
-      <TranslatorProvider translator={translator}>
+      <TranslatorContext.Provider
+        value={{
+          translator,
+          locale: translator.locale,
+        }}
+      >
         <App />
-      </TranslatorProvider>,
+      </TranslatorContext.Provider>,
     )
     expect(app.toJSON).toMatchSnapshot()
   })
