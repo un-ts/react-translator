@@ -17,12 +17,7 @@ describe('provider', () => {
 
   it('should render correctly', () => {
     const app = create(
-      <TranslatorContext.Provider
-        value={{
-          translator,
-          locale: translator.locale,
-        }}
-      >
+      <TranslatorContext.Provider value={{ translator }}>
         <App />
       </TranslatorContext.Provider>,
     )

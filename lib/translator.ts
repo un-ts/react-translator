@@ -28,7 +28,7 @@ const getValue = (input: any, key: string): string => {
       // tslint:disable-next-line no-console
       console.warn('you are trying to get non-literal value')
     }
-    return value && value.toString()
+    return value.toString()
   }
 
   return value
@@ -44,8 +44,7 @@ export interface TranslatorOptions {
 }
 
 let translations: Translations
-
-export let merge: Merge
+let merge: Merge
 
 export const mergeTranslations = (t: Translations) => {
   if (!merge) {
@@ -134,6 +133,7 @@ export const createTranslator = (
     value =
       value &&
       value.replace(/{([^{}]+)}/g, (matched, $0) => getValue(params, $0.trim()))
+
     return value == null ? key : value
   }
 

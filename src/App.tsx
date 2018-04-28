@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { TranslatorContextProps, withTranslator } from '../lib'
+import { TranslatorProps, withTranslator } from '../lib'
 
 const CustomEl = withTranslator({
   zh: {
@@ -16,7 +16,7 @@ export default withTranslator({
     defaultMsg: 'Default Message',
   },
 })(
-  class App extends React.PureComponent<TranslatorContextProps> {
+  class App extends React.PureComponent<TranslatorProps> {
     state = {
       a: 1,
       b: 1,
@@ -24,7 +24,7 @@ export default withTranslator({
 
     changed = 0
 
-    constructor(props: TranslatorContextProps, context?: any) {
+    constructor(props: TranslatorProps, context?: any) {
       super(props, context)
       this.addA = this.addA.bind(this)
       this.addB = this.addB.bind(this)

@@ -4,24 +4,22 @@ import React from 'react'
 import { Translations, mergeTranslations } from './translator'
 import {
   TranslatorContext,
-  TranslatorContextProps,
   TranslatorContextState,
+  TranslatorProps,
+  TranslatorState,
 } from './translator-context'
 
 let cid = 0
 
 const mergedCache: number[] = []
 
-export function withTranslator<P extends TranslatorContextProps>(
+export function withTranslator<P extends TranslatorProps>(
   translations?: Translations,
 ) {
   return (Component: React.StatelessComponent<P> | React.ComponentClass<P>) => {
     class TranslatorComponent extends React.PureComponent<
       TranslatorContextState,
-      {
-        locale: string
-        defaultLocale: string
-      }
+      TranslatorState
     > {
       static cid = cid++
 

@@ -28,27 +28,16 @@ const translator = createTranslator({
   merge,
 })
 
-class TranslatorContainer extends React.PureComponent {
-  state: TranslatorContextState = {
-    translator,
-    toggleLocale: locale => {
-      setItem(LOCALE, locale)
-    },
-  }
-
-  render() {
-    return (
-      <TranslatorContext.Provider value={this.state}>
-        <App />
-      </TranslatorContext.Provider>
-    )
-  }
+const toggleLocale = (locale: string) => {
+  setItem(LOCALE, locale)
 }
 
 const renderApp = () =>
   render(
     <AppContainer>
-      <TranslatorContainer />
+      <TranslatorContext.Provider value={{ translator, toggleLocale }}>
+        <App />
+      </TranslatorContext.Provider>
     </AppContainer>,
     document.getElementById('app'),
   )
