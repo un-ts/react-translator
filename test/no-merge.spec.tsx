@@ -4,17 +4,11 @@ import React from 'react'
 
 const mockFn = (console.warn = jest.fn())
 
-import { createTranslator, withTranslator } from '../lib'
+import { TranslatorContext, createTranslator, withTranslator } from '../lib'
 
 configure({ adapter: new Adapter() })
 
 const translator = createTranslator('en')
-
-const options = {
-  context: {
-    translator,
-  },
-}
 
 describe('merge', () => {
   const App = withTranslator({
@@ -26,7 +20,11 @@ describe('merge', () => {
     },
   })(({ t }) => <div>{t('msg')}</div>)
 
-  shallow(<App />, options)
+  shallow(
+    <TranslatorContext.Provider value={{ translator }}>
+      <App />
+    </TranslatorContext.Provider>,
+  )
 
   it('should warn on no merge', () => {
     expect(mockFn).toBeCalled()

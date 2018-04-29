@@ -4,9 +4,9 @@ import React from 'react'
 import { Translations, mergeTranslations } from './translator'
 import {
   TranslatorContext,
-  TranslatorContextState,
   TranslatorProps,
   TranslatorState,
+  TranslatorValue,
 } from './translator-context'
 
 let cid = 0
@@ -18,7 +18,7 @@ export function withTranslator<P extends TranslatorProps>(
 ) {
   return (Component: React.StatelessComponent<P> | React.ComponentClass<P>) => {
     class TranslatorComponent extends React.PureComponent<
-      TranslatorContextState,
+      TranslatorValue,
       TranslatorState
     > {
       static cid = cid++
@@ -28,7 +28,7 @@ export function withTranslator<P extends TranslatorProps>(
         defaultLocale: this.props.translator.defaultLocale,
       }
 
-      constructor(props: TranslatorContextState) {
+      constructor(props: TranslatorValue) {
         super(props)
         const { cid: id } = TranslatorComponent
         if (translations && mergedCache.indexOf(id) === -1) {

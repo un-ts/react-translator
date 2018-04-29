@@ -21,6 +21,6 @@ describe('provider', () => {
         <App />
       </TranslatorContext.Provider>,
     )
-    expect(app.toJSON).toMatchSnapshot()
+    expect(app.toJSON()).toMatchSnapshot()
   })
 })

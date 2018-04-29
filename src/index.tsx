@@ -2,7 +2,7 @@ import { merge } from 'lodash'
 import React from 'react'
 import { render } from 'react-dom'
 
-import { LOCALE, TranslatorContext, createTranslator } from '../lib'
+import { LOCALE, Toggle, TranslatorContext, createTranslator } from '../lib'
 
 import { getItem, setItem } from 'utils'
 
@@ -23,7 +23,7 @@ const translator = createTranslator({
   merge,
 })
 
-const toggleLocale = (locale: string) => {
+const toggleLocale: Toggle = locale => {
   setItem(LOCALE, locale)
 }
 
