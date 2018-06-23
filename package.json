@@ -148,7 +148,7 @@
     "rollup-plugin-uglify": "^4.0.0",
     "ts-jest": "^22.4.6",
     "ts-loader": "^4.3.0",
-    "ts-node": "^6.1.0",
+    "ts-node": "^7.0.0",
     "tslint": "^5.10.0",
     "tslint-config-prettier": "^1.12.0",
     "tslint-language-service": "^0.9.9",
