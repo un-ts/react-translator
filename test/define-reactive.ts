@@ -6,6 +6,7 @@ describe('defineReactive', () => {
   it('should add $watch on target', () => {
     const target: any = {}
     defineReactive(target, 'key')
+    defineReactive(target, 'key')
     expect(target).toHaveProperty('_watchers')
     expect(target).toHaveProperty('$watch')
   })

@@ -21,6 +21,6 @@ export class TranslatorProvider extends React.PureComponent<{
   }
 
   render() {
-    return React.Children.only(this.props.children)
+    return this.props.children
   }
 }

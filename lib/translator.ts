@@ -58,6 +58,7 @@ export function defineReactive<V, T extends { $watch?: Watch<V> }>(
         return () => {
           const index = ws.indexOf(watcher)
           if (index < 0) {
+            // istanbul ignore next
             if (process.env.NODE_ENV === 'development') {
               // tslint:disable-next-line no-console
               console.warn('the watcher has been removed before')
@@ -83,7 +84,7 @@ export function defineReactive<V, T extends { $watch?: Watch<V> }>(
     set(newVal) {
       const value = getter ? getter.call(obj) : val
 
-      /* istanbul ignore next */
+      // istanbul ignore next
       if (newVal === value || (newVal !== newVal && value !== value)) {
         return
       }
@@ -114,6 +115,7 @@ const getValue = (input: any, key: string): string => {
   })
 
   if (typeof value === 'object') {
+    // istanbul ignore next
     if (process.env.NODE_ENV === 'development' && value !== null) {
       // tslint:disable-next-line no-console
       console.warn('you are trying to get non-literal value')
@@ -139,6 +141,7 @@ export let merge: Merge
 
 export const mergeTranslations = (t: Translations) => {
   if (!merge) {
+    // istanbul ignore next
     if (process.env.NODE_ENV === 'development') {
       // tslint:disable-next-line no-console
       console.warn(
@@ -168,21 +171,27 @@ export const createTranslator = (
   if (instanceTranslations) {
     if (!translations) {
       translations = instanceTranslations
-    } else if (
+    }
+    // istanbul ignore next
+    else if (
       process.env.NODE_ENV === 'development' &&
       translations !== instanceTranslations
     ) {
       // tslint:disable-next-line no-console
       console.warn('translations should only be injected once!')
     }
-  } else if (!translations) {
+  }
+  // istanbul ignore next
+  else if (!translations) {
     translations = {}
   }
 
   if (instanceMerge) {
     if (!merge) {
       merge = instanceMerge
-    } else if (
+    }
+    // istanbul ignore next
+    else if (
       process.env.NODE_ENV === 'development' &&
       merge !== instanceMerge
     ) {
@@ -224,6 +233,7 @@ export const createTranslator = (
     value =
       value &&
       value.replace(/{([^{}]+)}/g, (matched, $0) => getValue(params, $0.trim()))
+
     return value == null ? key : value
   }
 

@@ -1,5 +1,10 @@
 {
-  "extends": ["tslint:recommended", "tslint-plugin-prettier", "tslint-config-prettier", "tslint-react"],
+  "extends": [
+    "tslint:recommended",
+    "tslint-plugin-prettier",
+    "tslint-config-prettier",
+    "tslint-react"
+  ],
   "rules": {
     "prettier": true,
     "interface-name": false,
@@ -15,5 +20,8 @@
         "named-imports-order": "lowercase-last"
       }
     ]
+  },
+  "linterOptions": {
+    "exclude": ["dist/**", "node_modules/**"]
   }
 }

@@ -2,7 +2,7 @@ import buble from 'rollup-plugin-buble'
 import replace from 'rollup-plugin-replace'
 import { uglify } from 'rollup-plugin-uglify'
 
-const pkg = require('./package.json')
+import pkg from './package.json'
 
 const NODE_ENV = process.env.NODE_ENV || 'development'
 const format = process.env.FORMAT || 'umd'
@@ -31,7 +31,7 @@ if (isProd) {
 }
 
 export default {
-  external: ['react', 'react-dom', 'prop-types'],
+  external: ['hoist-non-react-statics', 'react', 'react-dom', 'prop-types'],
   input: 'dist/es/index.js',
   output: {
     amd: {
@@ -49,6 +49,7 @@ export default {
     file: `dist/${format}/react-translator${isProd ? '.min' : ''}.js`,
     format,
     globals: {
+      'hoist-non-react-statics': 'hoistNonReactStatics',
       react: 'React',
       'react-dom': 'ReactDOM',
       'prop-types': 'PropTypes',

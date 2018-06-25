@@ -1,8 +1,6 @@
+import hoistNonReactStatics from 'hoist-non-react-statics'
 import PropTypes from 'prop-types'
 import React from 'react'
-
-// tslint:disable-next-line:no-var-requires
-const hoistNonReactStatics = require('hoist-non-react-statics')
 
 import {
   DEFAULT_LOCALE,
@@ -23,7 +21,7 @@ let cid = 0
 const mergedCache: number[] = []
 
 export function withTranslator<P = {}>(translations?: Translations) {
-  type Props = TranslatorProps & P
+  type Props = Partial<TranslatorProps> & P
 
   interface State {
     locale: string
@@ -47,8 +45,19 @@ export function withTranslator<P = {}>(translations?: Translations) {
       unwatchLocale: UnWatch
       unwatchDefaultLocale: UnWatch
 
-      constructor(props: Props, context?: any) {
+      constructor(
+        props: Props,
+        context?: {
+          translator: Translator
+        },
+      ) {
         super(props, context)
+
+        const { cid: id } = TranslatorComponent
+        if (translations && mergedCache.indexOf(id) === -1) {
+          mergeTranslations(translations)
+          mergedCache.push(id)
+        }
 
         const { translator } = this.context
 
@@ -71,14 +80,6 @@ export function withTranslator<P = {}>(translations?: Translations) {
             })
           },
         )
-      }
-
-      componentWillMount() {
-        const { cid: id } = TranslatorComponent
-        if (translations && mergedCache.indexOf(id) === -1) {
-          mergeTranslations(translations)
-          mergedCache.push(id)
-        }
       }
 
       componentWillUnmount() {
