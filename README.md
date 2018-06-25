@@ -103,22 +103,13 @@ export default withTranslator({
 
 If you are trying to get a non-exist key or value is undefined, you will get a warning in console on development. And if you want to ignore it, pass a third parameter `ignoreNonExist: boolean`: `$t('non-exist-key', null, true)`.
 
-If you want to watch locale change in any component(`withTranslator` is watching inside with enables rendering on `locale` and `defaultLocale` change):
-
-```js
-const unwatchLocale = translator.$watch('locale', (curr, prev) => {})
-const unwatchDefaultLocale = translator.$watch(
-  'defaultLocale',
-  (curr, prev) => {},
-)
-```
-
-Or you want to change locale on client:
+If you want to change locale on client:
 
 ```js
 {
   changeLocale() {
-    this.props.t.locale = 'locale'
+    this.props.toggleLocale('locale')
+    this.props.toggleDefaultLocale('defaultLocale')
   }
 }
 ```

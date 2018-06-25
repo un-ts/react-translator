@@ -15,7 +15,7 @@ const config: any = {
   entry: './src/index.tsx',
   output: {
     path: resolve('docs'),
-    filename: `[name].[${__DEV__ ? 'hash' : 'chunkhash'}].js`,
+    filename: `[name].[${__DEV__ ? 'hash' : 'contenthash'}].js`,
   },
   devtool: __DEV__ ? 'cheap-module-eval-source-map' : false,
   resolve: {
@@ -30,7 +30,7 @@ const config: any = {
     rules: [
       {
         test: /\.pug$/,
-        use: ['html-loader', 'pug-html-loader'],
+        use: ['html-loader', 'pug-plain-loader'],
       },
       {
         test: /\.tsx?$/,

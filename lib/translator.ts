@@ -2,7 +2,6 @@ export interface Translator<Locale = string> {
   (key: string, params?: any, ignoreNonExist?: boolean): string
   defaultLocale?: Locale
   locale?: Locale
-  $watch?: Watch<Locale>
 }
 
 export interface Translations {
@@ -11,96 +10,6 @@ export interface Translations {
 
 export const LOCALE = 'locale'
 export const DEFAULT_LOCALE = 'defaultLocale'
-
-export type Watcher<T> = (newVal: T, val: T) => void
-export type Watch<T> = (key: string, watcher: Watcher<T>) => UnWatch
-export type UnWatch = () => void
-
-export function defineReactive<V, T extends { $watch?: Watch<V> }>(
-  obj: T,
-  key: string,
-  val?: any,
-) {
-  const property = Object.getOwnPropertyDescriptor(obj, key)
-
-  if (property && property.configurable === false) {
-    return
-  }
-
-  const watchers: {
-    [key: string]: Array<Watcher<V>>
-  } = (ws => {
-    if (ws) {
-      return ws
-    }
-
-    ws = {}
-
-    Object.defineProperty(obj, '_watchers', {
-      value: ws,
-    })
-
-    return ws
-  })((obj as any)._watchers)
-
-  if (!watchers[key]) {
-    watchers[key] = []
-  }
-
-  if (!obj.$watch) {
-    Object.defineProperty(obj, '$watch', {
-      value(k: string, watcher: Watcher<V>) {
-        const ws = watchers[k]
-        if (!ws) {
-          return
-        }
-        ws.push(watcher)
-        return () => {
-          const index = ws.indexOf(watcher)
-          if (index < 0) {
-            // istanbul ignore next
-            if (process.env.NODE_ENV === 'development') {
-              // tslint:disable-next-line no-console
-              console.warn('the watcher has been removed before')
-            }
-            return
-          }
-          ws.splice(index, 1)
-        }
-      },
-    })
-  }
-
-  const getter = property && property.get
-  const setter = property && property.set
-
-  Object.defineProperty(obj, key, {
-    enumerable: true,
-    configurable: true,
-    get() {
-      const value = getter ? getter.call(obj) : val
-      return value
-    },
-    set(newVal) {
-      const value = getter ? getter.call(obj) : val
-
-      // istanbul ignore next
-      if (newVal === value || (newVal !== newVal && value !== value)) {
-        return
-      }
-
-      if (setter) {
-        setter.call(obj, newVal)
-      } else {
-        val = newVal
-      }
-
-      watchers[key].forEach(watcher => {
-        watcher(newVal, value)
-      })
-    },
-  })
-}
 
 const getValue = (input: any, key: string): string => {
   key = key.replace(/\[(\d+)\]/g, '.$1')
@@ -237,8 +146,8 @@ export const createTranslator = (
     return value == null ? key : value
   }
 
-  defineReactive(instance, LOCALE, instanceLocale)
-  defineReactive(instance, DEFAULT_LOCALE, instanceDefaultLocale)
+  instance[LOCALE] = instanceLocale
+  instance[DEFAULT_LOCALE] = instanceDefaultLocale
 
   return instance
 }

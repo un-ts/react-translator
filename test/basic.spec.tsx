@@ -4,7 +4,7 @@ import React from 'react'
 
 const mockFn = (console.warn = jest.fn())
 
-import { createTranslator, withTranslator } from '../lib'
+import { Toggle, createTranslator, withTranslator } from '../lib'
 
 configure({ adapter: new Adapter() })
 
@@ -30,9 +30,16 @@ const options = {
 }
 
 describe('withTranslator', () => {
-  const App = withTranslator()(({ t }) => (
-    <div>{t('msg') + t('fallback') + t('fallback2')}</div>
-  ))
+  let toggleLocale: Toggle
+  let toggleDefaulLocale: Toggle
+
+  const App = withTranslator()(
+    ({ t, toggleLocale: tl, toggleDefaulLocale: tdl }) => {
+      toggleLocale = tl
+      toggleDefaulLocale = tdl
+      return <div>{t('msg') + t('fallback') + t('fallback2')}</div>
+    },
+  )
   const wrapper = shallow(<App />, options)
 
   it('should render msg correctly', () => {
@@ -42,14 +49,14 @@ describe('withTranslator', () => {
   })
 
   it('should be reactive on locale changing', () => {
-    translator.locale = 'zh'
+    toggleLocale('zh')
     expect(wrapper.state('locale')).toBe('zh')
     expect(wrapper.dive().text()).toBe('信息Fallback回退')
   })
 
   it('should wacth defaultLocale', () => {
-    translator.defaultLocale = 'zh'
-    translator.locale = 'en'
+    toggleDefaulLocale('zh')
+    toggleLocale('en')
     expect(wrapper.dive().text()).toBe('MessageFallback回退')
   })
 
