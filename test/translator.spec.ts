@@ -1,32 +1,23 @@
-import { merge, mergeWith } from 'lodash'
+import { merge } from 'lodash'
+
+import { Translator } from '../lib'
 
 const mockFn = (console.warn = jest.fn())
 
-import { createTranslator } from '../lib'
+Translator.merge = merge
+Translator.addTranslations({
+  en: {
+    nested: {
+      name: 'My name is { name }',
+    },
+    obj: {},
+  },
+})
 
 describe('translator', () => {
-  const translator = createTranslator({
+  const translator = new Translator({
     locale: 'en',
-    translations: {
-      en: {
-        nested: {
-          name: 'My name is { name }',
-        },
-        obj: {},
-      },
-    },
-    merge,
-  })
-
-  it('should warn about inject twice', () => {
-    createTranslator({
-      locale: 'en',
-      translations: {},
-      merge: mergeWith,
-    })
-
-    expect(mockFn).toBeCalled()
-  })
+  }).get
 
   it('should warn about non exsit key and return key', () => {
     expect(translator('non-exsit.nested')).toBe('non-exsit.nested')

@@ -4,11 +4,11 @@ import React from 'react'
 
 const mockFn = (console.warn = jest.fn())
 
-import { createTranslator, withTranslator } from '../lib'
+import { Translator, withTranslator } from '../lib'
 
 configure({ adapter: new Adapter() })
 
-const translator = createTranslator('en')
+const translator = new Translator('en')
 
 const options = {
   context: {

@@ -3,13 +3,14 @@ import Adapter from 'enzyme-adapter-react-16'
 import { merge } from 'lodash'
 import React from 'react'
 
-import { createTranslator, withTranslator } from '../lib'
+import { Translator, withTranslator } from '../lib'
 
 configure({ adapter: new Adapter() })
 
-const translator = createTranslator({
+Translator.merge = merge
+
+const translator = new Translator({
   locale: 'en',
-  merge,
 })
 
 const options = {

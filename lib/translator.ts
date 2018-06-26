@@ -1,130 +1,86 @@
-export interface Translator<Locale = string> {
-  (key: string, params?: any, ignoreNonExist?: boolean): string
-  defaultLocale?: Locale
-  locale?: Locale
-}
-
 export interface Translations {
   [locale: string]: any
 }
 
-export const LOCALE = 'locale'
-export const DEFAULT_LOCALE = 'defaultLocale'
-
-const getValue = (input: any, key: string): string => {
-  key = key.replace(/\[(\d+)\]/g, '.$1')
-  let value = input
-
-  key.split('.').some(k => {
-    if (!value || typeof value !== 'object') {
-      return true
-    }
-
-    value = value[k]
-  })
-
-  if (typeof value === 'object') {
-    // istanbul ignore next
-    if (process.env.NODE_ENV === 'development' && value !== null) {
-      // tslint:disable-next-line no-console
-      console.warn('you are trying to get non-literal value')
-    }
-    return value && value.toString()
-  }
-
-  return value
-}
-
-export type Merge = (prev: Translations, next: Translations) => Translations
-
 export interface TranslatorOptions {
   locale: string
-  translations?: Translations
   defaultLocale?: string
-  merge?: Merge
 }
 
-let translations: Translations
-
-export let merge: Merge
-
-export const mergeTranslations = (t: Translations) => {
-  if (!merge) {
+export class Translator {
+  static merge(_prev: Translations, _next: Translations): Translations {
     // istanbul ignore next
     if (process.env.NODE_ENV === 'development') {
       // tslint:disable-next-line no-console
       console.warn(
-        'ReactTranslator will not help you to merge translations, please pass your own merge strategy, `lodash.merge` for example',
+        'ReactTranslator will not help you to merge translations, please manually set your own merge strategy with `Translator.merge = merge`, `lodash.merge` for example',
       )
     }
-    return
+    return null
   }
 
-  merge(translations, t)
-}
-
-export const createTranslator = (
-  translatorOptions: string | TranslatorOptions,
-): Translator => {
-  if (typeof translatorOptions === 'string') {
-    translatorOptions = { locale: translatorOptions }
+  static addTranslations(translations: Translations) {
+    Translator.merge(Translator.translations, translations)
   }
 
-  const {
-    locale: instanceLocale,
-    translations: instanceTranslations,
-    defaultLocale: instanceDefaultLocale,
-    merge: instanceMerge,
-  } = translatorOptions
+  private static translations: Translations = {}
 
-  if (instanceTranslations) {
-    if (!translations) {
-      translations = instanceTranslations
+  private _locale: string
+  private _defaultLocale: string
+
+  get locale() {
+    return this._locale
+  }
+
+  get defaultLocale() {
+    return this._defaultLocale
+  }
+
+  constructor(options: string | TranslatorOptions) {
+    if (typeof options === 'string') {
+      options = { locale: options }
     }
-    // istanbul ignore next
-    else if (
-      process.env.NODE_ENV === 'development' &&
-      translations !== instanceTranslations
-    ) {
-      // tslint:disable-next-line no-console
-      console.warn('translations should only be injected once!')
-    }
-  }
-  // istanbul ignore next
-  else if (!translations) {
-    translations = {}
+
+    const { locale, defaultLocale } = options
+
+    this._locale = locale
+    this._defaultLocale = defaultLocale
   }
 
-  if (instanceMerge) {
-    if (!merge) {
-      merge = instanceMerge
+  getValue(input: any, key: string): string {
+    key = key.replace(/\[(\d+)\]/g, '.$1')
+    let value = input
+
+    key.split('.').some(k => {
+      if (!value || typeof value !== 'object') {
+        return true
+      }
+
+      value = value[k]
+    })
+
+    if (typeof value === 'object') {
+      // istanbul ignore next
+      if (process.env.NODE_ENV === 'development' && value !== null) {
+        // tslint:disable-next-line no-console
+        console.warn('you are trying to get non-literal value')
+      }
+      return value && value.toString()
     }
-    // istanbul ignore next
-    else if (
-      process.env.NODE_ENV === 'development' &&
-      merge !== instanceMerge
-    ) {
-      // tslint:disable-next-line no-console
-      console.warn('merge should only be injected once!')
-    }
+
+    return value
   }
 
-  const instance: Translator = (
-    key: string,
-    params?: any,
-    ignoreNonExist?: boolean,
-  ) => {
-    const { locale } = instance
-    const translation = translations[locale]
+  // we need to confirm `this` inside will not be overridden
+  get = (key: string, params?: any, ignoreNonExist?: boolean): string => {
+    const translation = Translator.translations[this.locale]
 
-    let value = getValue(translation, key)
+    let value = this.getValue(translation, key)
 
     if (value === undefined) {
-      const { defaultLocale } = instance
-
-      if (defaultLocale && defaultLocale !== locale) {
-        const defaultTranslation = translations[defaultLocale]
-        value = getValue(defaultTranslation, key)
+      if (this.defaultLocale && this.defaultLocale !== this.locale) {
+        const defaultTranslation = Translator.translations[this.defaultLocale]
+        value = this.getValue(defaultTranslation, key)
       }
 
       if (
@@ -141,13 +97,18 @@ export const createTranslator = (
 
     value =
       value &&
-      value.replace(/{([^{}]+)}/g, (matched, $0) => getValue(params, $0.trim()))
+      value.replace(/{([^{}]+)}/g, (_matched, $0) =>
+        this.getValue(params, $0.trim()),
+      )
 
     return value == null ? key : value
   }
 
-  instance[LOCALE] = instanceLocale
-  instance[DEFAULT_LOCALE] = instanceDefaultLocale
+  setLocale(locale: string) {
+    this._locale = locale
+  }
 
-  return instance
+  setDefaultLocale(defaultLocale: string) {
+    this._defaultLocale = defaultLocale
+  }
 }

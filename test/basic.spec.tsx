@@ -1,26 +1,19 @@
 import { configure, shallow } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
+import { merge } from 'lodash'
 import React from 'react'
+
+import { Toggle, Translator, withTranslator } from '../lib'
 
 const mockFn = (console.warn = jest.fn())
 
-import { Toggle, createTranslator, withTranslator } from '../lib'
-
 configure({ adapter: new Adapter() })
 
-const translator = createTranslator({
+Translator.merge = merge
+
+const translator = new Translator({
   defaultLocale: 'en',
   locale: 'en',
-  translations: {
-    en: {
-      msg: 'Message',
-      fallback: 'Fallback',
-    },
-    zh: {
-      msg: '信息',
-      fallback2: '回退',
-    },
-  },
 })
 
 const options = {
@@ -33,13 +26,20 @@ describe('withTranslator', () => {
   let toggleLocale: Toggle
   let toggleDefaulLocale: Toggle
 
-  const App = withTranslator()(
-    ({ t, toggleLocale: tl, toggleDefaulLocale: tdl }) => {
-      toggleLocale = tl
-      toggleDefaulLocale = tdl
-      return <div>{t('msg') + t('fallback') + t('fallback2')}</div>
+  const App = withTranslator({
+    en: {
+      msg: 'Message',
+      fallback: 'Fallback',
     },
-  )
+    zh: {
+      msg: '信息',
+      fallback2: '回退',
+    },
+  })(({ t, toggleLocale: tl, toggleDefaulLocale: tdl }) => {
+    toggleLocale = tl
+    toggleDefaulLocale = tdl
+    return <div>{t('msg') + t('fallback') + t('fallback2')}</div>
+  })
   const wrapper = shallow(<App />, options)
 
   it('should render msg correctly', () => {

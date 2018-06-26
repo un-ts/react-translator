@@ -2,12 +2,12 @@ import hoistNonReactStatics from 'hoist-non-react-statics'
 import PropTypes from 'prop-types'
 import React from 'react'
 
-import { Translations, Translator, mergeTranslations } from './translator'
+import { Translations, Translator } from './translator'
 
 export type Toggle = (locale: string) => void
 
 export interface TranslatorProps {
-  t: Translator
+  t: Translator['get']
   locale: string
   defaultLocale: string
   toggleLocale: Toggle
@@ -33,7 +33,7 @@ export function withTranslator<P = {}>(translations?: Translations) {
       static cid = cid++
 
       static contextTypes = {
-        translator: PropTypes.func.isRequired,
+        translator: PropTypes.instanceOf(Translator),
       }
 
       context: {
@@ -50,7 +50,7 @@ export function withTranslator<P = {}>(translations?: Translations) {
 
         const { cid: id } = TranslatorComponent
         if (translations && mergedCache.indexOf(id) === -1) {
-          mergeTranslations(translations)
+          Translator.addTranslations(translations)
           mergedCache.push(id)
         }
 
@@ -63,14 +63,14 @@ export function withTranslator<P = {}>(translations?: Translations) {
       }
 
       toggleLocale: Toggle = locale => {
-        this.context.translator.locale = locale
+        this.context.translator.setLocale(locale)
         this.setState({
           locale,
         })
       }
 
       toggleDefaulLocale: Toggle = defaultLocale => {
-        this.context.translator.defaultLocale = defaultLocale
+        this.context.translator.setDefaultLocale(defaultLocale)
         this.setState({
           defaultLocale,
         })
@@ -82,9 +82,9 @@ export function withTranslator<P = {}>(translations?: Translations) {
         return (
           <Component
             {...this.props}
-            t={translator}
-            locale={translator.locale}
-            defaultLocale={translator.defaultLocale}
+            t={translator.get}
+            locale={this.state.locale}
+            defaultLocale={this.state.defaultLocale}
             toggleLocale={this.toggleLocale}
             toggleDefaulLocale={this.toggleDefaulLocale}
           />

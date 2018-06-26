@@ -10,6 +10,8 @@
     "lib": ["dom", "esnext"],
     "moduleResolution": "node",
     "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "paths": {
       "*": ["src/*"]
     },
@@ -18,7 +20,8 @@
         "name": "tslint-language-service"
       }
     ],
-    "sourceMap": true
+    "sourceMap": true,
+    "target": "es5"
   },
   "exclude": ["node_modules"]
 }

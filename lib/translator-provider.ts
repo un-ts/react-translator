@@ -7,11 +7,11 @@ export class TranslatorProvider extends React.PureComponent<{
   translator: Translator
 }> {
   static propTypes = {
-    translator: PropTypes.func.isRequired,
+    translator: PropTypes.instanceOf(Translator),
   }
 
   static childContextTypes = {
-    translator: PropTypes.func.isRequired,
+    translator: PropTypes.instanceOf(Translator),
   }
 
   getChildContext() {

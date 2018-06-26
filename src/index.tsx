@@ -1,14 +1,12 @@
 import { merge } from 'lodash'
 import React from 'react'
 import { render } from 'react-dom'
-
-import { TranslatorProvider, createTranslator } from '../lib'
-
 import { getItem } from 'utils'
 
-import App from './App'
+import { Translator, TranslatorProvider } from '../lib'
 
 import { translations } from './translator'
+import App from './App'
 
 const AppContainer =
   process.env.NODE_ENV === 'development'
@@ -16,11 +14,12 @@ const AppContainer =
       require('react-hot-loader').AppContainer
     : React.Fragment
 
-const translator = createTranslator({
+Translator.addTranslations(translations)
+Translator.merge = merge
+
+const translator = new Translator({
   defaultLocale: 'en',
   locale: getItem('locale') || 'zh',
-  translations,
-  merge,
 })
 
 const renderApp = () =>

@@ -1,8 +1,7 @@
 import React from 'react'
+import { setItem } from 'utils'
 
 import { TranslatorProps, withTranslator } from '../lib'
-
-import { setItem } from 'utils'
 
 const CustomEl = withTranslator({
   zh: {
@@ -63,7 +62,7 @@ export default withTranslator({
 
     render() {
       const {
-        props: { t },
+        props: { t, locale },
         state: { a, b },
       } = this
 
@@ -80,7 +79,7 @@ export default withTranslator({
                   <div className="col-sm-10">
                     <select
                       className="form-control"
-                      defaultValue={t.locale}
+                      defaultValue={locale}
                       onChange={this.handleSelect}
                     >
                       <option value="zh">中文</option>
