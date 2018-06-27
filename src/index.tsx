@@ -14,8 +14,8 @@ const AppContainer =
       require('react-hot-loader').AppContainer
     : React.Fragment
 
-Translator.addTranslations(translations)
 Translator.merge = merge
+Translator.addTranslations(translations)
 
 const translator = new Translator({
   defaultLocale: 'en',

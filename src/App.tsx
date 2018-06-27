@@ -26,7 +26,9 @@ export default withTranslator({
     changed = 0
 
     handleSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-      this.props.toggleLocale(e.target.value)
+      this.props.translator.set({
+        locale: e.target.value,
+      })
     }
 
     addA = () => {

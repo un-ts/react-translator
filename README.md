@@ -1,4 +1,4 @@
-# react-translator
+# react-translator2
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/JounQin/react-translator.svg)](https://greenkeeper.io/)
 [![Codecov](https://img.shields.io/codecov/c/github/JounQin/react-translator.svg)](https://codecov.io/gh/JounQin/react-translator)
@@ -25,20 +25,24 @@ yarn add react-translator2
 ```
 
 ```ts
-import { TranslatorProvider, createTranslator, withTranslator } from 'react-translator2'
+import { Translator, TranslatorProvider, withTranslator } from 'react-translator2'
 
-const translator = createTranslator({
+const translator = new Translator({
   locale?: string, // set it on initialize or before first rendering
-  translations?: {  // If you want to define translations in component only, no need to set it on initialize
-    [locale: string]: {
-      [key:string]: string | array | object
-    }
-  },
   defaultLocale?: string, // when no value can be found in current locale, try to fallback to defaultLocale
-  merge?: Function // `lodash.merge` for example, if you want to use component translator you must pass it
 })
 
-const App = withTranslator(translations?)(({ t }) => <div>{t('msg')}</div>)
+// `lodash.merge` for example, you must pass it
+Translator.merge = merge
+
+// If you want to define translations in component only, no need to set it on initialize
+Translator.addTranslations(translations: {
+  [locale: string]: {
+    [key:string]: string | array | object
+  }
+})
+
+const App = withTranslator(translations?)(({ t, translator, locale, defaultLocale }) => <div>{t('msg')}</div>)
 
 const app = (
   <TranslatorProvider translator={translator}>
@@ -103,13 +107,34 @@ export default withTranslator({
 
 If you are trying to get a non-exist key or value is undefined, you will get a warning in console on development. And if you want to ignore it, pass a third parameter `ignoreNonExist: boolean`: `$t('non-exist-key', null, true)`.
 
+If you want to watch locale change in any component(`withTranslator` is watching inside with enables rendering on `locale` and `defaultLocale` change), you can use `translator.watch` API like following:
+
+```js
+const unwatch = this.props.translator.watch(({ locale, defaultLocale }) => {})
+
+// if you want to unwatch changes, maybe in `componentWillUnmount` lifecycle
+unwatch()
+```
+
+Or you can also listen `componentDidUpdate` lifecycle:
+
+```js
+componentDidUpdate(prevProps: TranslatorProps) {
+  if(prevProps.locale !== this.props.locale) {
+    // locale changed
+  }
+}
+```
+
 If you want to change locale on client:
 
 ```js
 {
   changeLocale() {
-    this.props.toggleLocale('locale')
-    this.props.toggleDefaultLocale('defaultLocale')
+    this.props.translator.set({
+      defaultLocale?,
+      locale?,
+    })
   }
 }
 ```
@@ -118,13 +143,13 @@ If you want to change locale on client:
 
 You'd better to detect user custom locale via cookie and fallback to [accept-language](https://github.com/tinganho/node-accept-language) on first request.
 
-And you need to generate a single translator instance for every user request (cache by locale would be better) via `createTranslator`, `koa` for example:
+And you need to generate a single translator instance for every user request (cache by locale would be better), `koa` for example:
 
 ```ts
-import { TranslatorProvider, createTranslator } from 'react-translator2'
+import { Translator, TranslatorProvider } from 'react-translator2'
 
 app.use(async (ctx, next) => {
-  const translator = createTranslator({
+  const translator = new Translator({
     locale: string, // ctx.cookies.get('locale_cookie')
     defaultLocale: string,
   })

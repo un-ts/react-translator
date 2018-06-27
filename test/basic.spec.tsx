@@ -3,7 +3,7 @@ import Adapter from 'enzyme-adapter-react-16'
 import { merge } from 'lodash'
 import React from 'react'
 
-import { Toggle, Translator, withTranslator } from '../lib'
+import { Translator, withTranslator } from '../lib'
 
 const mockFn = (console.warn = jest.fn())
 
@@ -23,9 +23,6 @@ const options = {
 }
 
 describe('withTranslator', () => {
-  let toggleLocale: Toggle
-  let toggleDefaulLocale: Toggle
-
   const App = withTranslator({
     en: {
       msg: 'Message',
@@ -35,28 +32,30 @@ describe('withTranslator', () => {
       msg: '信息',
       fallback2: '回退',
     },
-  })(({ t, toggleLocale: tl, toggleDefaulLocale: tdl }) => {
-    toggleLocale = tl
-    toggleDefaulLocale = tdl
-    return <div>{t('msg') + t('fallback') + t('fallback2')}</div>
-  })
+  })(({ t }) => <div>{t('msg') + t('fallback') + t('fallback2')}</div>)
+
   const wrapper = shallow(<App />, options)
 
   it('should render msg correctly', () => {
     expect(wrapper.dive().text()).toBe('MessageFallbackfallback2')
     expect(mockFn).toBeCalled()
+    expect(wrapper.state('defaultLocale')).toBe('en')
     expect(wrapper.state('locale')).toBe('en')
   })
 
   it('should be reactive on locale changing', () => {
-    toggleLocale('zh')
+    translator.set({
+      locale: 'zh',
+    })
     expect(wrapper.state('locale')).toBe('zh')
     expect(wrapper.dive().text()).toBe('信息Fallback回退')
   })
 
-  it('should wacth defaultLocale', () => {
-    toggleDefaulLocale('zh')
-    toggleLocale('en')
+  it('should watch defaultLocale', () => {
+    translator.set({
+      locale: 'en',
+      defaultLocale: 'zh',
+    })
     expect(wrapper.dive().text()).toBe('MessageFallback回退')
   })
 

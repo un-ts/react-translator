@@ -7,6 +7,13 @@ export interface TranslatorOptions {
   defaultLocale?: string
 }
 
+export type Watcher = (
+  changed: {
+    locale: string
+    defaultLocale: string
+  },
+) => void
+
 export class Translator {
   static merge(_prev: Translations, _next: Translations): Translations {
     // istanbul ignore next
@@ -35,6 +42,11 @@ export class Translator {
   get defaultLocale() {
     return this._defaultLocale
   }
+
+  private watchers: Array<{
+    watcher: Watcher
+    unwatch: () => void
+  }> = []
 
   constructor(options: string | TranslatorOptions) {
     if (typeof options === 'string') {
@@ -104,11 +116,42 @@ export class Translator {
     return value == null ? key : value
   }
 
-  setLocale(locale: string) {
+  set = ({ locale = this.locale, defaultLocale = this.defaultLocale }) => {
+    if (this.locale === locale && this.defaultLocale === defaultLocale) {
+      return
+    }
+
     this._locale = locale
+    this._defaultLocale = defaultLocale
+
+    this.watchers.forEach(({ watcher }) =>
+      watcher({
+        locale: this.locale,
+        defaultLocale: this.defaultLocale,
+      }),
+    )
   }
 
-  setDefaultLocale(defaultLocale: string) {
-    this._defaultLocale = defaultLocale
+  watch(watcher: Watcher) {
+    const w = this.watchers.find(({ watcher: wc }) => wc === watcher)
+
+    if (w) {
+      return w.unwatch
+    }
+
+    const unwatch = () => {
+      const index = this.watchers.findIndex(({ watcher: wc }) => wc === watcher)
+
+      if (index !== -1) {
+        this.watchers.splice(index, 1)
+      }
+    }
+
+    this.watchers.push({
+      watcher,
+      unwatch,
+    })
+
+    return unwatch
   }
 }
