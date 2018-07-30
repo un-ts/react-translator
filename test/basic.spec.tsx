@@ -5,6 +5,7 @@ import React from 'react'
 
 import { Translator, withTranslator } from '../lib'
 
+// tslint:disable-next-line:no-console
 const mockFn = (console.warn = jest.fn())
 
 configure({ adapter: new Adapter() })

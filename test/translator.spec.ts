@@ -2,6 +2,7 @@ import { merge } from 'lodash'
 
 import { Translator } from '../lib'
 
+// tslint:disable-next-line:no-console
 const mockFn = (console.warn = jest.fn())
 
 Translator.merge = merge
