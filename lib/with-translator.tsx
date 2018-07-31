@@ -88,6 +88,9 @@ export function withTranslator<P = {}>(translations?: Translations) {
       }
     }
 
-    return hoistNonReactStatics(TranslatorComponent, Component)
+    return hoistNonReactStatics(
+      TranslatorComponent,
+      Component,
+    ) as React.ComponentType<Props>
   }
 }

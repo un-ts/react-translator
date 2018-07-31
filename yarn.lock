@@ -607,6 +607,12 @@
     "@types/webpack" "*"
     tslint "*"
 
+"@types/hoist-non-react-statics@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@types/hoist-non-react-statics/-/hoist-non-react-statics-3.0.0.tgz#1c6a0869d9769f189f4932d1a64ec7c7a2c8fdbc"
+  dependencies:
+    "@types/react" "*"
+
 "@types/html-minifier@*":
   version "3.5.2"
   resolved "https://registry.yarnpkg.com/@types/html-minifier/-/html-minifier-3.5.2.tgz#f897a13d847a774e9b6fd91497e9b0e0ead71c35"
