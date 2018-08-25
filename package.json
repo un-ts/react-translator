@@ -118,7 +118,7 @@
     "babel-plugin-transform-react-remove-prop-types": "^0.4.14",
     "concurrently": "^3.6.1",
     "cross-env": "^5.2.0",
-    "enzyme": "^3.3.0",
+    "enzyme": "^3.4.4",
     "enzyme-adapter-react-16": "^1.1.1",
     "fork-ts-checker-webpack-plugin": "^0.4.3",
     "html-loader": "^0.5.5",
