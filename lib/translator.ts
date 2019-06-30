@@ -24,8 +24,8 @@ const getValue = (input: any, key: string): string => {
   })
 
   if (typeof value === 'object') {
+    // istanbul ignore else
     if (process.env.NODE_ENV === 'development' && value !== null) {
-      // tslint:disable-next-line no-console
       console.warn('you are trying to get non-literal value')
     }
     return value.toString()
@@ -48,8 +48,8 @@ let merge: Merge
 
 export const mergeTranslations = (t: Translations) => {
   if (!merge) {
+    // istanbul ignore else
     if (process.env.NODE_ENV === 'development') {
-      // tslint:disable-next-line no-console
       console.warn(
         'ReactTranslator will not help you to merge translations, please pass your own merge strategy, `lodash.merge` for example',
       )
@@ -77,25 +77,26 @@ export const createTranslator = (
   if (instanceTranslations) {
     if (!translations) {
       translations = instanceTranslations
-    } else if (
+    } // istanbul ignore next
+    else if (
       process.env.NODE_ENV === 'development' &&
       translations !== instanceTranslations
     ) {
-      // tslint:disable-next-line no-console
       console.warn('translations should only be injected once!')
     }
-  } else if (!translations) {
+  } // istanbul ignore next
+  else if (!translations) {
     translations = {}
   }
 
   if (instanceMerge) {
     if (!merge) {
       merge = instanceMerge
-    } else if (
+    } // istanbul ignore next
+    else if (
       process.env.NODE_ENV === 'development' &&
       merge !== instanceMerge
     ) {
-      // tslint:disable-next-line no-console
       console.warn('merge should only be injected once!')
     }
   }
@@ -123,7 +124,6 @@ export const createTranslator = (
         value === undefined &&
         !ignoreNonExist
       ) {
-        // tslint:disable-next-line no-console
         console.warn(
           `your are trying to get nonexistent key \`${key}\` without default locale fallback`,
         )
@@ -132,7 +132,9 @@ export const createTranslator = (
 
     value =
       value &&
-      value.replace(/{([^{}]+)}/g, (matched, $0) => getValue(params, $0.trim()))
+      value.replace(/{([^{}]+)}/g, (_matched, $0) =>
+        getValue(params, $0.trim()),
+      )
 
     return value == null ? key : value
   }

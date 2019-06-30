@@ -1,8 +1,9 @@
-import { configure, shallow } from 'enzyme'
-import Adapter from 'enzyme-adapter-react-16'
+import { render } from '@testing-library/react'
 import React from 'react'
 
-const mockFn = (console.warn = jest.fn())
+const mockWarn = (console.warn = jest.fn())
+const mockToggle = jest.fn()
+const mockToggleDefault = jest.fn()
 
 import {
   Toggle,
@@ -10,8 +11,6 @@ import {
   createTranslator,
   withTranslator,
 } from '../lib'
-
-configure({ adapter: new Adapter() })
 
 const translator = createTranslator({
   defaultLocale: 'en',
@@ -23,7 +22,7 @@ const translator = createTranslator({
     },
     zh: {
       msg: '信息',
-      fallback2: '回退',
+      Fallback2: '回退',
     },
   },
 })
@@ -31,40 +30,45 @@ const translator = createTranslator({
 describe('withTranslator', () => {
   let toggleLocale: Toggle
   let toggleDefaultLocale: Toggle
+  let container: HTMLElement
+  let index = 0
 
   const App = withTranslator()(
     ({ t, toggleLocale: tl, toggleDefaultLocale: td }) => {
       toggleLocale = tl
       toggleDefaultLocale = td
-      return <div>{t('msg') + t('fallback') + t('fallback2')}</div>
+      return <div>{t('msg') + t('fallback') + t('Fallback2')}</div>
     },
   )
 
-  const wrapper = shallow(
-    <TranslatorContext.Provider value={{ translator }}>
-      <App />
-    </TranslatorContext.Provider>,
-  )
+  beforeEach(() => {
+    const passProps = !!(index++ % 2)
+    container = render(
+      <TranslatorContext.Provider value={{ translator }}>
+        <App
+          toggleLocale={passProps ? mockToggle : null}
+          toggleDefaultLocale={passProps ? null : mockToggleDefault}
+        />
+      </TranslatorContext.Provider>,
+    ).container
+  })
 
   it('should render msg correctly', () => {
-    expect(wrapper.dive().text()).toBe('MessageFallbackfallback2')
-    expect(mockFn).toBeCalled()
-    expect(wrapper.state('locale')).toBe('en')
+    expect(container.firstChild.textContent).toBe('MessageFallbackFallback2')
+    expect(mockWarn).toBeCalled()
   })
 
   it('should be reactive on locale changing', () => {
     toggleLocale('zh')
-    expect(wrapper.state('locale')).toBe('zh')
-    expect(wrapper.dive().text()).toBe('信息Fallback回退')
+    expect(mockToggle).toBeCalled()
+    expect(container.firstChild.textContent).toBe('信息Fallback回退')
   })
 
-  it('should wacth defaultLocale', () => {
+  it('should watch defaultLocale', () => {
     toggleDefaultLocale('zh')
+    expect(mockToggleDefault).toBeCalled()
     toggleLocale('en')
-    expect(wrapper.dive().text()).toBe('MessageFallback回退')
-  })
-
-  afterAll(() => {
-    wrapper.unmount()
+    expect(mockToggle).toBeCalled()
+    expect(container.firstChild.textContent).toBe('MessageFallback回退')
   })
 })

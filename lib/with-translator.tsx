@@ -13,10 +13,8 @@ let cid = 0
 
 const mergedCache: number[] = []
 
-export function withTranslator<P extends TranslatorProps>(
-  translations?: Translations,
-) {
-  return (Component: React.StatelessComponent<P> | React.ComponentClass<P>) => {
+export function withTranslator(translations?: Translations) {
+  return (Component: React.ComponentType<TranslatorProps>) => {
     class TranslatorComponent extends React.PureComponent<
       TranslatorValue,
       TranslatorState
@@ -40,7 +38,7 @@ export function withTranslator<P extends TranslatorProps>(
       toggleLocale = (locale: string) => {
         const { translator, toggleLocale } = this.props
         this.setState({
-          locale: (translator.locale = locale),
+          locale: translator.locale = locale,
         })
         if (toggleLocale) {
           toggleLocale(locale)
@@ -50,8 +48,9 @@ export function withTranslator<P extends TranslatorProps>(
       toggleDefaultLocale = (defaultLocale: string) => {
         const { translator, toggleDefaultLocale } = this.props
         this.setState({
-          defaultLocale: (translator.defaultLocale = defaultLocale),
+          defaultLocale: translator.defaultLocale = defaultLocale,
         })
+        // istanbul ignore else
         if (toggleDefaultLocale) {
           toggleDefaultLocale(defaultLocale)
         }
@@ -73,7 +72,7 @@ export function withTranslator<P extends TranslatorProps>(
       }
     }
 
-    function TranslatorWrapperComponent<Props = {}>(props: Props) {
+    function TranslatorWrapperComponent<Props>(props: Props) {
       return (
         <TranslatorContext.Consumer>
           {translatorContext => (

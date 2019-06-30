@@ -1,4 +1,5 @@
 import React from 'react'
+import { hot } from 'react-hot-loader/root'
 
 import { TranslatorProps, withTranslator } from '../lib'
 
@@ -11,7 +12,7 @@ const CustomEl = withTranslator({
   },
 })(({ t }) => <div>{t('x_man')}</div>)
 
-export default withTranslator({
+const AppContainer = withTranslator({
   en: {
     defaultMsg: 'Default Message',
   },
@@ -128,3 +129,5 @@ export default withTranslator({
     }
   },
 )
+
+export default __DEV__ ? hot(AppContainer) : AppContainer

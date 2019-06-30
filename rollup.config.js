@@ -1,6 +1,6 @@
 import buble from 'rollup-plugin-buble'
 import replace from 'rollup-plugin-replace'
-import uglify from 'rollup-plugin-uglify'
+import { uglify } from 'rollup-plugin-uglify'
 
 const pkg = require('./package.json')
 
@@ -31,7 +31,7 @@ if (isProd) {
 }
 
 export default {
-  external: ['react', 'react-dom', 'prop-types'],
+  external: ['hoist-non-react-statics', 'react', 'react-dom'],
   input: 'dist/es/index.js',
   output: {
     amd: {
@@ -40,7 +40,7 @@ export default {
     banner: `/*!
 * ${pkg.name} ${pkg.description}
 * Version ${pkg.version}
-* Copyright (C) 2018 JounQin <admin@1stg.me>
+* Copyright (C) 2018-present JounQin <admin@1stg.me>
 * Released under the MIT license
 *
 * Github: https://github.com/JounQin/react-translator
@@ -49,9 +49,9 @@ export default {
     file: `dist/${format}/react-translator${isProd ? '.min' : ''}.js`,
     format,
     globals: {
+      'hoist-non-react-statics': 'hoistNonReactStatics',
       react: 'React',
       'react-dom': 'ReactDOM',
-      'prop-types': 'PropTypes',
     },
     name: 'ReactTranslator',
   },

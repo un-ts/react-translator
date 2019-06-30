@@ -20,7 +20,7 @@ const config: any = {
   devtool: __DEV__ ? 'cheap-module-eval-source-map' : false,
   resolve: {
     alias: {
-      lodash: 'lodash-es',
+      lodash$: 'lodash-es',
       'react-translator': resolve('lib'),
     },
     extensions: ['.ts', '.tsx', '.js'],
@@ -60,8 +60,10 @@ const config: any = {
       name: 'vendors',
       chunks: 'all',
       cacheGroups: {
-        test: ({ context, request }: { context: string; request: string }) =>
-          /node_modules/.test(context) && !/\.css$/.test(request),
+        vendors: {
+          test: ({ context, request }: { context: string; request: string }) =>
+            /node_modules/.test(context) && !/\.css$/.test(request),
+        },
       },
     },
     runtimeChunk: {

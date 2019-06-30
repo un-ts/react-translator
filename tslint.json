@@ -1,13 +1,16 @@
 {
-  "extends": ["tslint:recommended", "tslint-plugin-prettier", "tslint-config-prettier", "tslint-react"],
+  "extends": [
+    "tslint:recommended",
+    "tslint-react",
+    "tslint-config-prettier",
+    "tslint-plugin-prettier"
+  ],
   "rules": {
     "prettier": true,
     "interface-name": false,
-    "jsx-no-multiline-js": false,
-    "member-access": false,
-    "no-empty": false,
+    "member-access": [true, "no-public"],
+    "no-console": [true, "log"],
     "no-unused-expression": true,
-    "no-unused-variable": true,
     "object-literal-sort-keys": false,
     "ordered-imports": [
       true,
@@ -15,6 +18,14 @@
         "import-sources-order": "lowercase-last",
         "named-imports-order": "lowercase-last"
       }
-    ]
+    ],
+    "variable-name": {
+      "options": [
+        "ban-keywords",
+        "check-format",
+        "allow-leading-underscore",
+        "allow-pascal-case"
+      ]
+    }
   }
 }

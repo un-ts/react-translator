@@ -28,8 +28,8 @@ describe('translator', () => {
     expect(mockFn).toBeCalled()
   })
 
-  it('should warn about non exsit key and return key', () => {
-    expect(translator('non-exsit.nested')).toBe('non-exsit.nested')
+  it('should warn about non exist key and return key', () => {
+    expect(translator('non-exist.nested')).toBe('non-exist.nested')
     expect(mockFn).toBeCalled()
   })
 

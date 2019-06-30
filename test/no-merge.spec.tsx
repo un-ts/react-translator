@@ -1,12 +1,9 @@
-import { configure, shallow } from 'enzyme'
-import Adapter from 'enzyme-adapter-react-16'
+import { render } from '@testing-library/react'
 import React from 'react'
 
 const mockFn = (console.warn = jest.fn())
 
 import { TranslatorContext, createTranslator, withTranslator } from '../lib'
-
-configure({ adapter: new Adapter() })
 
 const translator = createTranslator('en')
 
@@ -20,7 +17,7 @@ describe('merge', () => {
     },
   })(({ t }) => <div>{t('msg')}</div>)
 
-  shallow(
+  render(
     <TranslatorContext.Provider value={{ translator }}>
       <App />
     </TranslatorContext.Provider>,
