@@ -1,6 +1,6 @@
-import React from 'react'
-
 import { Translator } from './translator'
+
+import React from 'react'
 
 export type Toggle = (locale: string) => void
 

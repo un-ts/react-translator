@@ -1,13 +1,17 @@
 import { render } from '@testing-library/react'
+
+import {
+  TranslatorContext,
+  createTranslator,
+  withTranslator,
+} from 'react-translator'
 import React from 'react'
 
 const mockFn = (console.warn = jest.fn())
 
-import { TranslatorContext, createTranslator, withTranslator } from '../lib'
-
 const translator = createTranslator('en')
 
-describe('merge', () => {
+describe('no-merge', () => {
   const App = withTranslator({
     en: {
       msg: 'Message',

@@ -1,26 +1,34 @@
+export interface Translation<T extends number | string = string> {
+  [key: string]: T | Translation<T>
+}
+
+export type TranslateInput =
+  | Translation<number | string>
+  | (number | string | Translation<number | string>)[]
+
 export interface Translator<Locale = string> {
-  (key: string, params?: any, ignoreNonExist?: boolean): string
+  (key: string, params?: TranslateInput, ignoreNonExist?: boolean): string
   defaultLocale?: Locale
   locale?: Locale
 }
 
 export interface Translations {
-  [locale: string]: any
+  [locale: string]: Translation
 }
 
 export const LOCALE = 'locale'
 export const DEFAULT_LOCALE = 'defaultLocale'
 
-const getValue = (input: any, key: string): string => {
+const getValue = (input: TranslateInput, key: string): string => {
   key = key.replace(/\[(\d+)\]/g, '.$1')
-  let value = input
+  let value: string | TranslateInput = input
 
   key.split('.').some(k => {
     if (!value || typeof value !== 'object') {
       return true
     }
 
-    value = value[k]
+    value = (value as Translation)[k]
   })
 
   if (typeof value === 'object') {
@@ -103,7 +111,7 @@ export const createTranslator = (
 
   const instance: Translator = (
     key: string,
-    params?: any,
+    params?: TranslateInput,
     ignoreNonExist?: boolean,
   ) => {
     const { locale } = instance

@@ -1,5 +1,5 @@
 import { intersection } from 'lodash'
-
+import { Translations } from 'react-translator'
 import { Locale } from 'utils'
 
 const context = require.context('.', true, I18N_REGEX)
@@ -11,30 +11,28 @@ const LOCALE_KEYS: { [key: string]: string[] } = {
   [ZH]: [],
 }
 
-export const translations: {
-  [locale: string]: {
-    [key: string]: string
-  }
-} = context.keys().reduce((modules: any, key: string) => {
-  const module = context(key)
-  const lang = key.match(I18N_REGEX)[1]
-  const matched = modules[lang] || (modules[lang] = {})
+export const translations: Translations = context
+  .keys()
+  .reduce((modules: Record<string, {}>, key: string) => {
+    const module = context(key)
+    const lang = key.match(I18N_REGEX)[1]
+    const matched = modules[lang] || (modules[lang] = {})
 
-  if (__DEV__) {
-    const keys = LOCALE_KEYS[lang]
-    const moduleKeys = Object.keys(module)
+    if (__DEV__) {
+      const keys = LOCALE_KEYS[lang]
+      const moduleKeys = Object.keys(module)
 
-    const duplicates = intersection(keys, moduleKeys)
+      const duplicates = intersection(keys, moduleKeys)
 
-    if (duplicates.length) {
-      // tslint:disable-next-line no-console
-      console.warn('detect duplicate keys:', duplicates)
+      if (duplicates.length) {
+        // tslint:disable-next-line no-console
+        console.warn('detect duplicate keys:', duplicates)
+      }
+
+      keys.push(...moduleKeys)
     }
 
-    keys.push(...moduleKeys)
-  }
+    Object.assign(matched, module)
 
-  Object.assign(matched, module)
-
-  return modules
-}, {})
+    return modules
+  }, {})

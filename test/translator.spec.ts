@@ -1,8 +1,7 @@
+import { createTranslator } from 'react-translator'
 import { merge, mergeWith } from 'lodash'
 
 const mockFn = (console.warn = jest.fn())
-
-import { createTranslator } from '../lib'
 
 describe('translator', () => {
   const translator = createTranslator({

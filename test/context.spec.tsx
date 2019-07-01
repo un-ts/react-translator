@@ -1,9 +1,12 @@
+import {
+  TranslatorContext,
+  createTranslator,
+  withTranslator,
+} from 'react-translator'
 import React from 'react'
 import { create } from 'react-test-renderer'
 
-import { TranslatorContext, createTranslator, withTranslator } from '../lib'
-
-describe('provider', () => {
+describe('context', () => {
   const translator = createTranslator({
     locale: 'en',
     translations: {

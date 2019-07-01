@@ -17,7 +17,7 @@ export const getItem = (sKey: string) =>
     document.cookie.replace(
       new RegExp(
         '(?:(?:^|.*;)\\s*' +
-          encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, '\\$&') +
+          encodeURIComponent(sKey).replace(/[-.+*]/g, '\\$&') +
           '\\s*\\=\\s*([^;]*).*$)|^.*$',
       ),
       '$1',
@@ -32,7 +32,7 @@ export const setItem = (
   sDomain?: string,
   bSecure?: boolean,
 ) => {
-  if (!sKey || /^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) {
+  if (!sKey || /^(?:expires|max-age|path|domain|secure)$/i.test(sKey)) {
     return false
   }
   let sExpires = ''

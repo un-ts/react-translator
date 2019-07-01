@@ -1,8 +1,12 @@
+import { render } from '@testing-library/react'
+
+import {
+  TranslatorContext,
+  createTranslator,
+  withTranslator,
+} from 'react-translator'
 import { merge } from 'lodash'
 import React from 'react'
-
-import { render } from '@testing-library/react'
-import { TranslatorContext, createTranslator, withTranslator } from '../lib'
 
 const translator = createTranslator({
   locale: 'en',

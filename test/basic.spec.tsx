@@ -1,16 +1,16 @@
 import { render } from '@testing-library/react'
-import React from 'react'
-
-const mockWarn = (console.warn = jest.fn())
-const mockToggle = jest.fn()
-const mockToggleDefault = jest.fn()
 
 import {
   Toggle,
   TranslatorContext,
   createTranslator,
   withTranslator,
-} from '../lib'
+} from 'react-translator'
+import React from 'react'
+
+const mockWarn = (console.warn = jest.fn())
+const mockToggle = jest.fn()
+const mockToggleDefault = jest.fn()
 
 const translator = createTranslator({
   defaultLocale: 'en',

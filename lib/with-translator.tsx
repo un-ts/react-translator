@@ -1,6 +1,3 @@
-import hoistNonReactStatics from 'hoist-non-react-statics'
-import React from 'react'
-
 import { Translations, mergeTranslations } from './translator'
 import {
   TranslatorContext,
@@ -8,6 +5,9 @@ import {
   TranslatorState,
   TranslatorValue,
 } from './translator-context'
+
+import hoistNonReactStatics from 'hoist-non-react-statics'
+import React from 'react'
 
 let cid = 0
 

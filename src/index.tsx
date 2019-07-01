@@ -1,14 +1,16 @@
+import { translations } from './translator'
+import App from './App'
+
+import {
+  LOCALE,
+  Toggle,
+  TranslatorContext,
+  createTranslator,
+} from 'react-translator'
 import { merge } from 'lodash'
 import React from 'react'
 import ReactDOM from 'react-dom'
-
-import { LOCALE, Toggle, TranslatorContext, createTranslator } from '../lib'
-
 import { getItem, setItem } from 'utils'
-
-import App from './App'
-
-import { translations } from './translator'
 
 const translator = createTranslator({
   defaultLocale: 'en',

@@ -2,7 +2,7 @@ import buble from 'rollup-plugin-buble'
 import replace from 'rollup-plugin-replace'
 import { uglify } from 'rollup-plugin-uglify'
 
-const pkg = require('./package.json')
+import pkg from './package.json'
 
 const NODE_ENV = process.env.NODE_ENV || 'development'
 const format = process.env.FORMAT || 'umd'

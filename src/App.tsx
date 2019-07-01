@@ -1,16 +1,16 @@
-import React from 'react'
 import { hot } from 'react-hot-loader/root'
 
-import { TranslatorProps, withTranslator } from '../lib'
+import { TranslatorProps, withTranslator } from 'react-translator'
+import React from 'react'
 
 const CustomEl = withTranslator({
   zh: {
-    x_man: 'X 战警',
+    xMan: 'X 战警',
   },
   en: {
-    x_man: 'X Men',
+    xMan: 'X Men',
   },
-})(({ t }) => <div>{t('x_man')}</div>)
+})(({ t }) => <div>{t('xMan')}</div>)
 
 const AppContainer = withTranslator({
   en: {
@@ -25,7 +25,7 @@ const AppContainer = withTranslator({
 
     changed = 0
 
-    constructor(props: TranslatorProps, context?: any) {
+    constructor(props: TranslatorProps, context?: unknown) {
       super(props, context)
       this.addA = this.addA.bind(this)
       this.addB = this.addB.bind(this)

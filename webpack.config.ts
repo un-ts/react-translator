@@ -1,21 +1,21 @@
-import path from 'path'
+import { resolve } from 'path'
 
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin'
-import HtmlWebpackPlugin from 'html-webpack-plugin'
-import webpack from 'webpack'
 
-const NODE_ENV = process.env.NODE_ENV || 'development'
+import HtmlWebpackPlugin from 'html-webpack-plugin'
+import webpack, { Configuration } from 'webpack'
+
+const NODE_ENV =
+  (process.env.NODE_ENV as Configuration['mode']) || 'development'
 
 const __DEV__ = NODE_ENV === 'development'
 
-const resolve = (...args: string[]) => path.resolve(process.cwd(), ...args)
-
-const config: any = {
+const config: Configuration = {
   mode: NODE_ENV,
   entry: './src/index.tsx',
   output: {
     path: resolve('docs'),
-    filename: `[name].[${__DEV__ ? 'hash' : 'chunkhash'}].js`,
+    filename: `[name].[${__DEV__ ? 'hash' : 'contenthash'}].js`,
   },
   devtool: __DEV__ ? 'cheap-module-eval-source-map' : false,
   resolve: {
@@ -30,7 +30,7 @@ const config: any = {
     rules: [
       {
         test: /\.pug$/,
-        use: ['html-loader', 'pug-html-loader'],
+        use: ['html-loader', 'pug-plain-loader'],
       },
       {
         test: /\.tsx?$/,
@@ -39,16 +39,6 @@ const config: any = {
             loader: 'babel-loader',
             options: {
               cacheDirectory: true,
-            },
-          },
-          {
-            loader: 'ts-loader',
-            options: {
-              compilerOptions: {
-                module: 'esnext',
-                target: 'esnext',
-              },
-              transpileOnly: true,
             },
           },
         ],
@@ -78,9 +68,7 @@ const config: any = {
     new HtmlWebpackPlugin({
       template: 'src/index.pug',
     }),
-    new ForkTsCheckerWebpackPlugin({
-      tslint: true,
-    }),
+    new ForkTsCheckerWebpackPlugin(),
   ],
 }
 
